@@ -13,7 +13,7 @@ export const EMOTION_META: Record<string, { icon: string; color: string; label: 
 }
 
 interface BarProps {
-  emotion:  string
+  emotion:  string;
   score:    number
   delay?:   number
   dominant?: boolean

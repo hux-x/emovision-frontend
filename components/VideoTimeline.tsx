@@ -92,7 +92,7 @@ export default function VideoTimeline({ segments, totalDuration, durationFormatt
                   exit={{ height: 0, opacity: 0 }} transition={{ duration: .28 }}
                   className="border-t border-mist/60">
                   <div className="px-4 py-3 space-y-1.5">
-                    {Object.entries(seg.emotion_scores).sort(([, a], [, b]) => b - a).map(([emo, val]) => (
+                    {Object.entries(seg.emotion_scores).sort(([, a], [, b]) => b! - a!).map(([emo, val]) => (
                       <div key={emo} className="flex items-center gap-2">
                         <span className="text-[11px] text-zinc-600 w-14 font-mono capitalize">{emo}</span>
                         <div className="flex-1 h-1.5 bg-mist rounded-full overflow-hidden">
@@ -101,7 +101,7 @@ export default function VideoTimeline({ segments, totalDuration, durationFormatt
                             initial={{ width: 0 }} animate={{ width: `${val}%` }}
                             transition={{ duration: .55, ease: 'easeOut' }} />
                         </div>
-                        <span className="text-[11px] font-mono text-zinc-600 w-8 text-right">{val.toFixed(0)}%</span>
+                        <span className="text-[11px] font-mono text-zinc-600 w-8 text-right">{val?.toFixed(0)}%</span>
                       </div>
                     ))}
                   </div>

@@ -53,8 +53,12 @@ export default function FileUpload({ onResult, onError }: Props) {
       const res   = isVid ? await api.analyzeVideo(file) : await api.analyzeImage(file)
       clearInterval(tick); setProgress(100)
       setTimeout(() => { onResult(res, file); clear() }, 350)
-    } catch (err: any) {
-      clearInterval(tick); onError(err.message || 'Analysis failed'); setState('idle'); setProgress(0)
+    } catch (err: unknown) {
+      clearInterval(tick)
+      const msg = err instanceof Error ? err.message : (typeof err === 'string' ? err : 'Analysis failed')
+      onError(msg)
+      setState('idle')
+      setProgress(0)
     }
   }
 

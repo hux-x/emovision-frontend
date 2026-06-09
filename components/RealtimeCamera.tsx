@@ -59,10 +59,11 @@ export default function RealtimeCamera() {
         await videoRef.current.play()
       }
       setRunning(true)
-    } catch (err: any) {
-      setCamError(err.message?.includes('Permission')
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err)
+      setCamError(msg.includes('Permission')
         ? 'Camera permission denied. Please allow access in your browser settings.'
-        : `Camera error: ${err.message}`)
+        : `Camera error: ${msg}`)
     } finally {
       setLoading(false)
     }

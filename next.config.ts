@@ -1,3 +1,5 @@
+import { output } from "framer-motion/client"
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   async rewrites() {
@@ -8,6 +10,6 @@ const nextConfig = {
       },
     ]
   },
+  output: 'export',
 }
-
 module.exports = nextConfig

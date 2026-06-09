@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { ImageIcon, Film, Users, Info, X } from 'lucide-react'
-import type { AnalysisResult, ImageResult, VideoResult } from '@/lib/api'
+import type { AnalysisResult, ImageResult, VideoResult, EmotionScores } from '@/lib/api'
 import { EmotionBreakdown } from './EmotionBreakdown'
 import VideoTimeline from './VideoTimeline'
 
@@ -10,6 +10,13 @@ interface Props {
   result:  AnalysisResult
   file:    File
   onClose: () => void
+}
+
+/** Strip undefined values so EmotionScores satisfies Record<string, number> */
+function toScores(e: EmotionScores): Record<string, number> {
+  return Object.fromEntries(
+    Object.entries(e).filter((entry): entry is [string, number] => entry[1] !== undefined)
+  )
 }
 
 export default function AnalysisResultPanel({ result, file, onClose }: Props) {
@@ -77,8 +84,11 @@ function ImageContent({ result, file }: { result: ImageResult; file: File }) {
             </span>
           </div>
           <EmotionBreakdown
-            emotions={result.overall.emotions} dominant={result.overall.dominant_emotion}
-            color={result.overall.color} icon={result.overall.icon} title="Overall" />
+            emotions={toScores(result.overall.emotions)}
+            dominant={result.overall.dominant_emotion}
+            color={result.overall.color}
+            icon={result.overall.icon}
+            title="Overall" />
         </div>
       </div>
 
@@ -95,8 +105,11 @@ function ImageContent({ result, file }: { result: ImageResult; file: File }) {
                   Face #{face.face_index + 1}
                 </p>
                 <EmotionBreakdown
-                  emotions={face.emotions} dominant={face.dominant_emotion}
-                  color={face.color} icon={face.icon} compact />
+                  emotions={toScores(face.emotions)}
+                  dominant={face.dominant_emotion}
+                  color={face.color}
+                  icon={face.icon}
+                  compact />
               </motion.div>
             ))}
           </div>
@@ -125,8 +138,10 @@ function VideoContent({ result }: { result: VideoResult }) {
       </div>
 
       <EmotionBreakdown
-        emotions={result.overall.emotions} dominant={result.overall.dominant_emotion}
-        color={result.overall.color} icon={result.overall.icon}
+        emotions={toScores(result.overall.emotions)}
+        dominant={result.overall.dominant_emotion}
+        color={result.overall.color}
+        icon={result.overall.icon}
         title="Overall Emotion Distribution" />
 
       <VideoTimeline

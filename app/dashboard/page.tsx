@@ -26,6 +26,7 @@ export default function DashboardPage() {
   const [tab,       setTab]       = useState<Tab>('upload')
   const [result,    setResult]    = useState<AnalysisResult | null>(null)
   const [resFile,   setResFile]   = useState<File | null>(null)
+  const [resultKey, setResultKey] = useState<string>('')
   const [error,     setError]     = useState('')
   const [history,   setHistory]   = useState<HistoryEntry[]>([])
 
@@ -38,7 +39,10 @@ export default function DashboardPage() {
 
   const handleResult = (res: AnalysisResult, file: File) => {
     setResult(res); setResFile(file); setError('')
-    setHistory(prev => [{ id: Date.now().toString(), result: res, file }, ...prev.slice(0, 9)])
+    // generate a stable key for the rendered panel when a new result arrives
+    const k = Date.now().toString()
+    setResultKey(k)
+    setHistory(prev => [{ id: k, result: res, file }, ...prev.slice(0, 9)])
     if (user) setUser(u => u ? { ...u, analyses_count: u.analyses_count + 1 } : u)
   }
 
@@ -93,7 +97,7 @@ export default function DashboardPage() {
               {([
                 { id: 'upload', label: 'Upload',      icon: Upload },
                 { id: 'camera', label: 'Live Camera', icon: Camera },
-              ] as { id: Tab; label: string; icon: any }[]).map(t => (
+              ] as { id: Tab; label: string; icon: React.FC<{ size: number }> }[]).map(t => (
                 <button key={t.id} onClick={() => setTab(t.id)}
                   className={`flex items-center gap-2 px-6 py-4 text-sm font-medium transition-all relative
                     ${tab === t.id ? 'text-white' : 'text-zinc-500 hover:text-zinc-300'}`}>
@@ -147,8 +151,8 @@ export default function DashboardPage() {
           <AnimatePresence mode="wait">
             {result && resFile && (
               <AnalysisResultPanel
-                key={result.filename + Date.now()}
-                result={result} file={resFile}
+                key={resultKey! || result?.filename}
+                result={result!} file={resFile!}
                 onClose={() => { setResult(null); setResFile(null) }} />
             )}
           </AnimatePresence>
@@ -183,7 +187,7 @@ export default function DashboardPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-white text-xs font-medium truncate">
-                          {h.result.filename ?? 'Untitled'}
+                          {h?.result.filename ?? 'Untitled'}
                         </p>
                         <div className="flex items-center gap-2 mt-0.5">
                           <span className="text-xs font-mono capitalize" style={{ color: h.result.overall.color }}>
