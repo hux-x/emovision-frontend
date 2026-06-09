@@ -23,8 +23,12 @@ export default function LoginPage() {
       const res = await api.login(email, password)
       setToken(res.access_token)
       router.push('/dashboard')
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message)
+      } else {
+        setError('An unknown error occurred')
+      }
     } finally {
       setLoading(false)
     }
