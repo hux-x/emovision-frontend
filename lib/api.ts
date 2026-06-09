@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
 
-const BASE = 'https://api-emv.devbuns.com/api'
+const BASE = 'https://api-emv.devbuns.com'
 
 // ── Token helpers ─────────────────────────────────────────────────────────
 
